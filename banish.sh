@@ -12,12 +12,18 @@ chants=(
     "PHSDAFJAS_MASHDFJK"
     "CTHULHU-RYLEH-WAGWE"
     "TUE-SEOJFADS-RED-LOE"
-
+    "Loadlondnquiry-MarixSateSenorBehead"
+    "ParsonMasterPesterFesterPlague"
 )
 time_lim=30
+max_sanity=5
+current_sanity=$max_sanity
 sealed=0
 total=${#chants[@]}
+
+
 for chant in "${chants[@]}"; do
+    sanity_bar=""
     sigil=$((100 + RANDOM % 899))
     incantation="${chant}-${sigil}"
     tput cup 6 0
@@ -25,25 +31,39 @@ for chant in "${chants[@]}"; do
     tput el
     echo " [THE VEIL THINS] Whispers echo from the dark..."
     echo " [CHANT] $incantation"
-    echo " [SANITY] ${time_lim} SECONDS REMAIN"
+    for(( i = 1; i <= max_sanity; i++)); do
+        if [ $i -le $current_sanity ]; then
+            sanity_bar+="█"
+        else
+            sanity_bar+="-"
+        fi
+    done
+    echo " [SANITY] [${sanity_bar}] (${time_lim}s REMAIN"
     tput el
-    echo -ne "SPEAK INCANTATION > \033[31m$incantation\033[0m"
+    echo -ne "SPEAK INCANTATION > \033[31;4m$incantation\033[0m"
     tput cup 10 20
     read -t "$time_lim" spoken
     status=$?
     if [ $status -ne 0 ]; then
-        echo -e "\n\n[MADNESS] Your tounge freezes. The entity steps through..."
-        echo "Seals bound: $sealed / $total"
-        sleep 5
-        exit 1
-    fi
-    if [ "$spoken" == "$incantation" ]; then
-        echo "[BOUND] The shadows recoil! Seal $((sealed + 1)) holds..."
+        echo ""
+        echo -e "\n\n [SANITY] Your sanity decreases."
+        ((current_sanity--))
+        sleep 1
+    elif [ "$spoken" == "$incantation" ]; then
+        echo ""
+        echo " [BOUND] The shadows recoil! Seal $((sealed + 1)) holds..."
         ((sealed++))
         ((time_lim--))
         [ $time_lim -lt 4 ] && time_lim=4
     else
-        echo -e "\n[CURSED] You mispronounced the syllable! Your mind fractures."
+        echo ""
+        echo -e " [CURSED] You mispronounced the syllable! Your mind fractures."
+        ((current_sanity--))
+        sleep 1
+    fi
+    if [ $current_sanity -le 0 ]; then
+        echo ""
+        echo -e "\n\n [MADNESS] Your tounge freezes. The entity steps through..."
         echo "Seals bound: $sealed / $total"
         sleep 5
         exit 1

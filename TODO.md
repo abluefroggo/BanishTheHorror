@@ -1,4 +1,7 @@
 ANSI stuff  
 tput stuff  
 ASCII art  
-Sfx?
+Sfx?  
+leaderboard  
+completion time tracker of some sort  
+better input loop
