@@ -1,4 +1,4 @@
-ANSI stuff
-tput stuff
-ASCII art
+ANSI stuff  
+tput stuff  
+ASCII art  
 Sfx?
