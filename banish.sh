@@ -30,15 +30,21 @@ for chant in "${chants[@]}"; do
     echo""
     tput el
     echo " [THE VEIL THINS] Whispers echo from the dark..."
-    echo " [CHANT] $incantation"
+    echo -e " [CHANT] \033[35m$incantation\033[0m"
     for(( i = 1; i <= max_sanity; i++)); do
         if [ $i -le $current_sanity ]; then
             sanity_bar+="█"
         else
             sanity_bar+="-"
         fi
-    done
-    echo " [SANITY] [${sanity_bar}] (${time_lim}s REMAIN"
+done
+    echo -en " [SANITY] \033[32m"
+    if [ $current_sanity -le 1 ]; then
+        echo -en "\033[31m"
+    elif [ $current_sanity -le $(( max_sanity / 2 )) ]; then
+        echo -en "\033[33m"
+    fi
+    echo -e "[${sanity_bar}]\033[0m (${time_lim}s REMAIN"
     tput el
     echo -ne "SPEAK INCANTATION > \033[31;4m$incantation\033[0m"
     tput cup 10 20
