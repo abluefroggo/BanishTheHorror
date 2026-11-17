@@ -2,12 +2,13 @@
 # Banishing The Horror: A Eldrich Speed Typing Game
 
 clear
-echo "================================================="
-echo "        THE GREEN GRIMOIRE - BINDING RITE"
-echo "================================================="
+echo -e "\033[32m================================================="
+echo -e "        THE GREEN GRIMOIRE - BINDING RITE"
+echo -e "=================================================\033[0m"
 echo "The candles flicker. The air tastes like copper."
 echo "Chant the true names before the seal shatters and the horror is released"
 sleep 2
+
 chants=(
     "PHSDAFJAS_MASHDFJK"
     "CTHULHU-RYLEH-WAGWE"
@@ -20,7 +21,6 @@ max_sanity=5
 current_sanity=$max_sanity
 sealed=0
 total=${#chants[@]}
-
 
 for chant in "${chants[@]}"; do
     sanity_bar=""
@@ -37,32 +37,52 @@ for chant in "${chants[@]}"; do
         else
             sanity_bar+="-"
         fi
-done
+    done
     echo -en " [SANITY] \033[32m"
     if [ $current_sanity -le 1 ]; then
         echo -en "\033[31m"
     elif [ $current_sanity -le $(( max_sanity / 2 )) ]; then
         echo -en "\033[33m"
     fi
-    echo -e "[${sanity_bar}]\033[0m (${time_lim}s REMAIN"
+    echo -e "[${sanity_bar}]\033[0m (${time_lim}s REMAIN)"
     tput el
-    echo -ne "SPEAK INCANTATION > \033[31;4m$incantation\033[0m"
-    tput cup 10 20
-    read -t "$time_lim" spoken
+    echo -ne "SPEAK INCANTATION > "
+
+    spoken=""
+    for (( i=0; i<${#incantation}; i++)); do
+        read -t "$time_lim" -rs -n 1 char
+        status=$?
+        if [ $status -ne 0 ]; then
+            break
+        fi
+        if [ -z "$char" ] || [[ "$char" == $'\r' || "$char" == $'\n' ]]; then
+            break
+        fi
+        spoken="${spoken}${char}"
+        expected="${incantation:i:1}"
+        if [ "$char" == "$expected" ]; then
+            echo -ne "\033[32m$char\033[0m"
+        else
+            echo -ne "\033[31m$char\033[0m"
+        fi
+done
     status=$?
     if [ $status -ne 0 ]; then
         echo ""
+        tput el
         echo -e "\n\n [SANITY] Your sanity decreases."
         ((current_sanity--))
         sleep 1
     elif [ "$spoken" == "$incantation" ]; then
         echo ""
+        tput el
         echo " [BOUND] The shadows recoil! Seal $((sealed + 1)) holds..."
         ((sealed++))
         ((time_lim--))
         [ $time_lim -lt 4 ] && time_lim=4
     else
         echo ""
+        tput el
         echo -e " [CURSED] You mispronounced the syllable! Your mind fractures."
         ((current_sanity--))
         sleep 1
