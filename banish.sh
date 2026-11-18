@@ -1,10 +1,12 @@
 #!/bin/bash
 # Banishing The Horror: A Eldrich Speed Typing Game
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-clear
-echo -e "\033[32m================================================="
-echo -e "        THE GREEN GRIMOIRE - BINDING RITE"
-echo -e "=================================================\033[0m"
+source "$DIR/lib/ui.sh"
+source "$DIR/lib/mechanics.sh"
+source "$DIR/lib/save.sh"
+
+draw_title
 echo "The candles flicker. The air tastes like copper."
 echo "Chant the true names before the seal shatters and the horror is released"
 sleep 2
@@ -49,7 +51,8 @@ for chant in "${chants[@]}"; do
     echo -ne "SPEAK INCANTATION > "
 
     spoken=""
-    for (( i=0; i<${#incantation}; i++)); do
+    i=0
+    while [ $i  -lt ${#incantation} ]; do
         read -t "$time_lim" -rs -n 1 char
         status=$?
         if [ $status -ne 0 ]; then
@@ -57,6 +60,13 @@ for chant in "${chants[@]}"; do
         fi
         if [ -z "$char" ] || [[ "$char" == $'\r' || "$char" == $'\n' ]]; then
             break
+        elif [[ "$char" == $'\x7f' || "$char" == $'\x08' ]]; then
+            if [ $i -gt 0 ]; then
+                ((i--))
+                spoken="${spoken%?}"
+                echo -ne "\b \b"
+            fi
+            continue
         fi
         spoken="${spoken}${char}"
         expected="${incantation:i:1}"
@@ -65,6 +75,7 @@ for chant in "${chants[@]}"; do
         else
             echo -ne "\033[31m$char\033[0m"
         fi
+        ((i++))
 done
     status=$?
     if [ $status -ne 0 ]; then
