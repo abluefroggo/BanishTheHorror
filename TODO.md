@@ -11,4 +11,5 @@ save files
 installer scripts
 polish readme  
 animated art  
-screen effects
+screen effects  
+wpm
