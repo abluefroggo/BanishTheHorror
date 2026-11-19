@@ -14,4 +14,7 @@ animated art
 screen effects  
 wpm  
 better accuracy  
-better time
+better time  
+have prompts feel more urgent as sanity gets lower  
+rank/title  
+flags
