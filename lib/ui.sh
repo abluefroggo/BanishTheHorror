@@ -9,6 +9,9 @@ draw_hud(){
     local current_sanity=$1
     local max_sanity=$2
     local time_lim=$3
+    local incantation=$4
+    local total_chars=$5
+    local errs=$6
 
     local sanity_bar=""
 
@@ -33,6 +36,13 @@ draw_hud(){
         echo -en "\033[33m"
     fi
     echo -e "[${sanity_bar}]\033[0m (${time_lim}s REMAIN)"
+
+    accuracy=100
+    if [ $total_chars -gt 0 ]; then
+        accuracy=$(( 100 - (errs * 100 / total_chars) ))
+    fi
+
+    echo -e "Accuracy: ${accuracy}%"
     tput el
     echo -ne "SPEAK INCANTATION > "
 }

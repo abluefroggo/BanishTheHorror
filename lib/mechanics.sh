@@ -27,8 +27,10 @@ run_round(){
         if [ "$char" == "$expected" ]; then
             echo -ne "\033[32m$char\033[0m"
         else
+            ((errors++))
             echo -ne "\033[31m$char\033[0m"
         fi
+        ((total_characters++))
         ((i++))
     done
 

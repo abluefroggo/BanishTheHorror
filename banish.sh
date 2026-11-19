@@ -24,20 +24,22 @@ max_sanity=5
 current_sanity=$max_sanity
 sealed=0
 total=${#chants[@]}
+errors=0
+total_characters=0
 
 for chant in "${chants[@]}"; do
 
     sigil=$((100 + RANDOM % 899))
     incantation="${chant}-${sigil}"
 
-    draw_hud "$current_sanity" "$max_sanity" "$time_lim"
+    draw_hud "$current_sanity" "$max_sanity" "$time_lim" "$incantation" "$total_characters" "$errors"
 
     run_round "$incantation" "$time_lim"
 
-    if [ $timed_out -eq 1 ]; then
+    if [[ $timed_out -eq 1 || $accuracy -le 30 ]]; then
         echo ""
         tput el
-        echo -e "\n\n [SANITY] Your sanity decreases."
+        echo -e "\n\n [SANITY] You stumbled over your words. Your sanity decreases."
         ((current_sanity--))
         sleep 1
     elif [ "$spoken" == "$incantation" ]; then
