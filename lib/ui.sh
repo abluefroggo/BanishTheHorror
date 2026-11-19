@@ -42,7 +42,7 @@ draw_hud(){
         accuracy=$(( 100 - (errs * 100 / total_chars) ))
     fi
 
-    echo -e "Accuracy: ${accuracy}%"
+    echo -e "Accuracy: ${accuracy}% "
     tput el
     echo -ne "SPEAK INCANTATION > "
 }

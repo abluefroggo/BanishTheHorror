@@ -5,7 +5,11 @@ DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$DIR/lib/ui.sh"
 source "$DIR/lib/mechanics.sh"
 source "$DIR/lib/save.sh"
+source "$DIR/lib/menus.sh"
 
+draw_title
+draw_menu
+clear
 draw_title
 
 echo "The candles flicker. The air tastes like copper."
@@ -69,6 +73,9 @@ done
 echo ""
 echo " [BANISHED] The circle flares white and goes cold."
 echo " [SURVIVED] Dawn comes. The horror has been sealed."
+if [ -s "$DIR/data/highscores.txt" ]; then
+    echo "Latest record: $(tail -n 1 "$DIR/data/highscores.txt")"
+fi
 save "$sealed" "$total"
 sleep 10
 echo ""
